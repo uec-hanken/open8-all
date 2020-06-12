@@ -1,0 +1,9 @@
+*.HEX
+*.hex
+*.out
+*dump.txt
+*.qws
+*incremental_db
+*output_files
+*db
+
