@@ -98,6 +98,7 @@ architecture behave of de2_top is
 
   signal CPU_Clock           : std_logic := '0';
   signal CPU_PLL_Locked      : std_logic := '0';
+  signal Buttons             : std_logic_vector(7 downto 0) := x"00";
 
 begin
 
@@ -140,7 +141,10 @@ begin
     LED_R0              => LED_R0,
     LED_R1              => LED_R1,
     LED_R2              => LED_R2,
-    LED_R3              => LED_R3,  
+    LED_R3              => LED_R3, 
+    LEDG                => LEDG, 
+    SW                  => SW, 
+    Buttons             => Buttons, 
     SDLC_In             => SDLC_In, 
     SDLC_MClk           => SDLC_MClk,
     SDLC_Out            => SDLC_Out, 
@@ -153,5 +157,9 @@ begin
     Mx_Clock            => Mx_Clock,
     MX_LDCSn            => MX_LDCSn
   );
+  Buttons(0) <= KEY1;
+  Buttons(1) <= KEY1;
+  Buttons(2) <= KEY1;
+  Buttons(7 downto 3) <= (others => '0');
 
 end architecture;

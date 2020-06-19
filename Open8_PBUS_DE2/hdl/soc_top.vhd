@@ -26,9 +26,9 @@ port(
   Wr_Data                    : in  std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);-- 8
   Rd_En                      : in  std_logic; --                                      1
   GP_Flags                   : in  std_logic_vector(4 downto 0); --                   5, NOTE: Those can be optional.
-  Rd_Data                    : out std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0) -- 8
+  Rd_Data                    : out std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);-- 8
   -- Open 8 Interrupts
-  Interrupts                 : out std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0) -- 8
+  Interrupts                 : out std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);-- 8
   
   -- The rest of the SOC is here
   -- LED Paddleboard
@@ -36,6 +36,15 @@ port(
   LED_R1              : out std_logic;
   LED_R2              : out std_logic;
   LED_R3              : out std_logic;
+  
+  -- LED outputs
+  LEDG                : out std_logic_vector(7 downto 0);
+  
+  -- Switches
+  SW                  : in  std_logic_vector(9 downto 0);
+  
+  -- Buttons
+  Buttons             : in  std_logic_vector(7 downto 0);
 
   -- SDLC Serial Interface   
   SDLC_In             : in std_logic;  
@@ -58,7 +67,7 @@ port(
   -- MAX 7221 SPI Interface  
   Mx_Data             : out std_logic; 
   Mx_Clock            : out std_logic; 
-  MX_LDCSn            : out std_logic; 
+  MX_LDCSn            : out std_logic 
 );
 end entity;
 
@@ -69,11 +78,9 @@ architecture behave of soc_top is
   signal Read_Buses          : OPEN8_BUS_ARRAY := INIT_READ_BUS;
 
   signal DipSwitches         : DATA_TYPE    := x"00";
-  signal Button_In           : DATA_TYPE    := x"FF";
+  signal Button_In           : DATA_TYPE    := x"00";
 
 begin
-
-  Interrupts <= x"00";
 
   
   Open8_Bus.Clock      <= clock;
@@ -124,6 +131,8 @@ begin
 --  Open8_Bus                => Open8_Bus,
 --  Rd_Data                  => Read_Buses(RDB_RAM)
 --);
+
+  Interrupts(INT_ALU) <= '0';
   
   -- CUT HERE --
 
@@ -218,8 +227,7 @@ begin
     Button_In                => Button_In
   );
 
-  Button_In(0)               <= KEY1;
-  Button_in(7 downto 1)      <= (others => '0');
+  Button_In                  <= Buttons;
 
   U_SER : entity work.o8_async_serial
   generic map(

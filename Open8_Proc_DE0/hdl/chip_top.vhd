@@ -26,7 +26,7 @@ port(
   Wr_Data                    : out std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);-- 8
   Rd_En                      : out std_logic; --                                      1
   GP_Flags                   : out std_logic_vector(4 downto 0); --                   5, NOTE: Those can be optional.
-  Rd_Data                    : in  std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0) -- 8
+  Rd_Data                    : in  std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);-- 8
   -- Open 8 Interrupts
   Interrupts                 : in  std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0) -- 8
   ---------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ architecture behave of chip_top is
   -- The real bus, and the real interrupts
   signal Open8_Bus           : OPEN8_BUS_TYPE  := INIT_OPEN8_BUS;
   signal Read_Buses          : DATA_TYPE       := OPEN8_NULLBUS;
-  signal Open8_Ints          : INTERRUPT_BUNDLE := x"00"       
+  signal Open8_Ints          : INTERRUPT_BUNDLE := x"00";    
   
   signal Read_RAM            : DATA_TYPE       := OPEN8_NULLBUS;
   signal Read_ALU16          : DATA_TYPE       := OPEN8_NULLBUS;
@@ -73,7 +73,7 @@ begin
     Clock                    => CPU_Clock,
     PLL_Locked               => not CPU_Reset,
     Open8_Bus                => Open8_Bus,
-    Rd_Data                  => merge_buses(Read_Buses),
+    Rd_Data                  => Read_Buses,
     Interrupts               => Interrupts
   );
   
