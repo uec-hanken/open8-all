@@ -164,9 +164,9 @@ set_location_assignment PIN_AG26 -to GPIO0[35]
 # We just use a regular HSMC to 3xGPIO converter
 # All are binded to the J2 port from the HSMC
 
-set_location_assignment PIN_Y28 -to GPIO1[0]    # HSMC_CLKIN_N2
+#set_location_assignment PIN_Y28 -to GPIO1[0]    # HSMC_CLKIN_N2
 set_location_assignment PIN_T22 -to GPIO1[1]    # HSMC_RX_n16
-set_location_assignment PIN_Y27 -to GPIO1[2]    # HSMC_CLKIN_P2
+#set_location_assignment PIN_Y27 -to GPIO1[2]    # HSMC_CLKIN_P2
 set_location_assignment PIN_T21 -to GPIO1[3]    # HSMC_RX_p16
 set_location_assignment PIN_V22 -to GPIO1[4]    # HSMC_TX_n16
 set_location_assignment PIN_R23 -to GPIO1[5]    # HSMC_RX_n15
