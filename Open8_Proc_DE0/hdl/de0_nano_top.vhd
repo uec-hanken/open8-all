@@ -63,6 +63,8 @@ begin
 
   U_CHIP : entity work.chip_top
   port map(
+    clock                      => GPIN0(0),
+    reset                      => GPIN0(1),
     Address                    => GPIO0(15 downto 0),
     Wr_Data                    => GPIO0(23 downto 16),
     Rd_Data                    => GPIO0(31 downto 24),
@@ -71,9 +73,7 @@ begin
     
     Interrupts                 => GPIO1(7 downto 0),
     GP_Flags                   => GPIO1(12 downto 8),
-    uSec_Tick                  => GPIO1(13),
-    clock                      => GPIO1(14),
-    reset                      => GPIO1(15)
+    uSec_Tick                  => GPIO1(13)
   );
   
 end architecture;

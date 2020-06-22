@@ -126,17 +126,21 @@ begin
 
   U_CPU : entity work.soc_top
   port map(
-    Address                    => GPIO0(15 downto 0),
-    Wr_Data                    => GPIO0(23 downto 16),
-    Rd_Data                    => GPIO0(31 downto 24),
-    Wr_En                      => GPIO0(32),
-    Rd_En                      => GPIO0(33),
+    -- Connections of the bus and clocks
+    -- NOTE: The reason are shifted compared to the DE0 version
+    -- is because the DE0 have some weird "GPIOIN" pins
+    clock                      => GPIO0(0),
+    reset                      => GPIO0(2),
+    Address                    => GPIO0(17 downto 3) & GPIO0(1),
+    Wr_Data                    => GPIO0(25 downto 18),
+    Rd_Data                    => GPIO0(33 downto 26),
+    Wr_En                      => GPIO0(34),
+    Rd_En                      => GPIO0(35),
     
-    Interrupts                 => GPIO1(7 downto 0),
-    GP_Flags                   => GPIO1(12 downto 8),
-    uSec_Tick                  => GPIO1(13),
-    clock                      => GPIO1(14),
-    reset                      => GPIO1(15),
+    Interrupts                 => GPIO1(9 downto 3) & GPIO1(1),
+    GP_Flags                   => GPIO1(14 downto 10),
+    uSec_Tick                  => GPIO1(15),
+    -- end: Connections of the bus and clocks
     
     LED_R0              => LED_R0,
     LED_R1              => LED_R1,
