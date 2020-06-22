@@ -99,6 +99,7 @@ architecture behave of de2_top is
   signal CPU_Clock           : std_logic := '0';
   signal CPU_PLL_Locked      : std_logic := '0';
   signal Buttons             : std_logic_vector(7 downto 0) := x"00";
+  signal Interrupts          : std_logic_vector(7 downto 0) := x"00";
 
 begin
 
@@ -137,7 +138,7 @@ begin
     Wr_En                      => GPIO0(34),
     Rd_En                      => GPIO0(35),
     
-    Interrupts                 => GPIO1(9 downto 3) & GPIO1(1),
+    Interrupts                 => Interrupts,
     GP_Flags                   => GPIO1(14 downto 10),
     uSec_Tick                  => GPIO1(15),
     -- end: Connections of the bus and clocks
@@ -165,5 +166,7 @@ begin
   Buttons(1) <= KEY1;
   Buttons(2) <= KEY1;
   Buttons(7 downto 3) <= (others => '0');
+  GPIO1(9 downto 3) <= Interrupts(7 downto 1);
+  GPIO1(1) <= Interrupts(0);
 
 end architecture;
