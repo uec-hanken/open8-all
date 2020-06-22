@@ -167,7 +167,7 @@ set_location_assignment PIN_AG26 -to GPIO0[35]
 set_location_assignment PIN_Y28 -to GPIO1[0]    # HSMC_CLKIN_N2
 set_location_assignment PIN_T22 -to GPIO1[1]    # HSMC_RX_n16
 set_location_assignment PIN_Y27 -to GPIO1[2]    # HSMC_CLKIN_P2
-set_location_assignment PIN_Y17 -to GPIO1[3]    # HSMC_RX_p16
+set_location_assignment PIN_U22 -to GPIO1[3]    # HSMC_RX_p16
 set_location_assignment PIN_V22 -to GPIO1[4]    # HSMC_TX_n16
 set_location_assignment PIN_R23 -to GPIO1[5]    # HSMC_RX_n15
 set_location_assignment PIN_U22 -to GPIO1[6]    # HSMC_TX_p16
@@ -196,10 +196,10 @@ set_location_assignment PIN_L28 -to GPIO1[28]   # HSMC_TX_n11
 set_location_assignment PIN_T26 -to GPIO1[29]   # HSMC_RX_n9
 set_location_assignment PIN_L27 -to GPIO1[30]   # HSMC_TX_p11
 set_location_assignment PIN_T25 -to GPIO1[31]   # HSMC_RX_p9
-set_location_assignment PIN_J26 -to GPIO1[32]   # HSMC_TX_n10
-set_location_assignment PIN_P28 -to GPIO1[33]   # HSMC_TX_n9
-set_location_assignment PIN_J25 -to GPIO1[34]   # HSMC_TX_p10
-set_location_assignment PIN_P27 -to GPIO1[35]   # HSMC_TX_p9
+#set_location_assignment PIN_J26 -to GPIO1[32]   # HSMC_TX_n10
+#set_location_assignment PIN_P28 -to GPIO1[33]   # HSMC_TX_n9
+#set_location_assignment PIN_J25 -to GPIO1[34]   # HSMC_TX_p10
+#set_location_assignment PIN_P27 -to GPIO1[35]   # HSMC_TX_p9
 
 
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
