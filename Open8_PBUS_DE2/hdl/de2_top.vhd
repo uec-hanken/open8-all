@@ -122,8 +122,8 @@ begin
     locked                   => CPU_PLL_Locked
   );
   
-  GPIO0(14) <= CPU_Clock; -- clock
-  GPIO0(15) <= not CPU_PLL_Locked; -- reset
+  GPIO0(0) <= CPU_Clock; -- clock
+  GPIO0(2) <= not CPU_PLL_Locked; -- reset
 
   U_CPU : entity work.soc_top
   port map(
