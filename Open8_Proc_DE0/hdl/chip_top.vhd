@@ -17,8 +17,10 @@ entity chip_top is
 port(
   -- Master oscillator
   clock                      : in  std_logic; --                                      1
+  -- Locked (or original reset to the cpu)
+  Locked                     : in  std_logic; --                                      1
   -- Push buttons
-  reset                      : in  std_logic; --                                      1
+  reset                      : out std_logic; --                                      1
   -- Open 8 Bus (Unpacked and trimmed)
   uSec_Tick                  : out std_logic; --                                      1
   Address                    : out std_logic_vector(OPEN8_ADDR_WIDTH - 1 downto 0);-- 16
@@ -30,8 +32,8 @@ port(
   -- Open 8 Interrupts
   Interrupts                 : in  std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0) -- 8
   ---------------------------------------------------------------------------------------
-  --                                                                                  50 pins
-  --                                                                                  45 pins (without GP Flags)
+  --                                                                                  51 pins
+  --                                                                                  46 pins (without GP Flags)
 );
 end entity;
 
@@ -40,7 +42,7 @@ architecture behave of chip_top is
   -- I/O mapping aliases
 
   -- Clock & Reset
-  alias  CPU_Reset           is reset;
+  alias  CPU_PLL_Locked      is Locked;
   alias  CPU_Clock           is clock;
 
   -- The real bus, and the real interrupts
@@ -71,12 +73,13 @@ begin
   )
   port map(
     Clock                    => CPU_Clock,
-    PLL_Locked               => not CPU_Reset,
+    PLL_Locked               => CPU_PLL_Locked,
     Open8_Bus                => Open8_Bus,
     Rd_Data                  => Read_Buses,
     Interrupts               => Interrupts
   );
   
+  reset      <= Open8_Bus.Reset;
   uSec_Tick  <= Open8_Bus.uSec_Tick;
   Address    <= Open8_Bus.Address;
   Wr_En      <= Open8_Bus.Wr_En;
