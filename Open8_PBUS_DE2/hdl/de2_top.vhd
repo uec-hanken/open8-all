@@ -219,8 +219,8 @@ begin
     MX_LDCSn            => MX_LDCSn
   );
   
-  --GPIO0(0) <= CPU_Clock; -- clock
-  BUF_CPU_Clock : COMPONENT ALT_IOBUF port map (i => CPU_Clock, oe => '1', io => GPIO0(0));
+  GPIO1(27) <= CPU_Clock; -- clock
+  --BUF_CPU_Clock : COMPONENT ALT_IOBUF port map (i => CPU_Clock, oe => '1', io => GPIO1(27));
   --Address                    => GPIO0(18) & GPIO0(16 downto 3) & GPIO0(1),
   BUF_Address_00 : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO0(1), o => Address(0));
   BUF_Address_01 : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO0(3), o => Address(1));

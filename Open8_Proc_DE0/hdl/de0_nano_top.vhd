@@ -145,7 +145,8 @@ begin
   );
   
   --clock <= GPIN0(0);
-  BUF_clock_buf : COMPONENT ALT_INBUF port map (i => GPIN0(0), o => clock_buf);
+  --BUF_clock_buf : COMPONENT ALT_INBUF port map (i => GPIN0(0), o => clock_buf);
+  BUF_clock_buf : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO1(25), o => clock_buf);
   CLK_BUF_INST : COMPONENT clkbuf port map( inclk => clock_buf, outclk => clock );
   
   BUF_Address_00 : COMPONENT ALT_IOBUF port map (i => Address(0), oe => '1', io => GPIO0(0));
