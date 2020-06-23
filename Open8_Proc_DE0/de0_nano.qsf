@@ -250,6 +250,7 @@ set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name ENABLE_SIGNALTAP OFF
 set_global_assignment -name USE_SIGNALTAP_FILE etc.stp
 set_global_assignment -name SDC_FILE de0_nano.sdc
+set_global_assignment -name QSYS_FILE clkbuf.qsys
 set_global_assignment -name VHDL_FILE hdl/Open8_pkg.vhd
 set_global_assignment -name VHDL_FILE hdl/Open8_cfg.vhd
 set_global_assignment -name VHDL_FILE hdl/ram_1k_core.vhd
