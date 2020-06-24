@@ -87,7 +87,8 @@ begin
   Rd_En      <= Open8_Bus.Rd_En;
   GP_Flags   <= Open8_Bus.GP_Flags;
   Read_Buses <= Rd_Data OR Read_RAM OR Read_ALU16;
-  Open8_Ints <= Interrupts;
+  Open8_Ints(7 downto INT_ALU+1) <= Interrupts(7 downto INT_ALU+1);
+  Open8_Ints(INT_ALU-1 downto 0) <= Interrupts(INT_ALU-1 downto 0);
   Open8_Ints(INT_ALU) <= Int_ALU16 or Interrupts(INT_ALU);
   
   -- NOTE: Comment (or delete) anything you want
