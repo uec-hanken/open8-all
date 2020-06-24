@@ -1,0 +1,97 @@
+#! /usr/bin/env python
+
+# UEC's hex 2 VHDL converter
+# PROBLEM: Most of the compilers won't take roms from initial statements
+# SOLUTION: Put the rom directly inside the process, old-style
+
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import doctest
+import sys
+import warnings
+import os.path
+from collections import namedtuple
+
+vhdl_template_1 = """
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+
+ENTITY {name} IS
+	PORT
+	(
+		address		: IN STD_LOGIC_VECTOR ({address_bits_minus_1} DOWNTO 0);
+		clock		: IN STD_LOGIC  := '1';
+		q		: OUT STD_LOGIC_VECTOR ({output_width_minus_1} DOWNTO 0)
+	);
+END {name};
+
+
+ARCHITECTURE SYN OF {name} IS
+   signal datout : std_logic_vector(q'range);
+BEGIN
+
+  RomProc: process(address) is
+
+  begin
+      case address is
+"""
+
+vhdl_template_2 = """
+        when others => datout <= (others => '0');
+      end case;
+  end process RomProc;
+
+  q <= datout;
+
+END SYN;
+"""
+
+
+def gen_rom(name, width, depth, rom_hex_file):
+    address_bits = (depth - 1).bit_length()
+    variables = {
+        'name': name,
+        'address_bits_minus_1': address_bits - 1,
+        'depth': depth,
+        'depth_minus_1': depth - 1,
+        'output_width': width,
+        'output_width_minus_1': width - 1,
+        # $random in vhdl returns 32 bits; compute how many times to repeat
+        # $random in order to fill the width
+        'num_random_blocks': (width - 1) // 32 + 1,
+    }
+    str1 = vhdl_template_1.format(**variables)
+    str2 = vhdl_template_2.format(**variables)
+    strrom = ""
+    if not os.path.isfile(rom_hex_file):
+        sys.exit('Hex file does not exist or cannot be opened')
+    
+    with open(rom_hex_file) as f:
+        lines = f.readlines()
+    
+    address = 0
+    for line in lines:
+        line = line.replace(" ", "")
+        line = line.replace("\n", "")
+        if line:
+            strrom += "         when x\"" + ("000" + hex(address)[2:].rstrip("L"))[-3:] + "\" => datout <= x\"" + line + "\";\n"
+            address += 1
+    
+    return str1 + "\n" + strrom + "\n" + str2
+
+def main():
+    if '--run-tests' in sys.argv:
+        (failures, total) = doctest.testmod(verbose=True)
+        sys.exit(1 if failures else 0)
+
+    if len(sys.argv) < 2:
+        sys.exit('Please give a .hex file as input')
+
+    print('-- This file created by ' + __file__)
+    vhdl = gen_rom("rom_4k_core", 8, 4096, sys.argv[1])
+    print(vhdl)
+
+if __name__ == '__main__':
+    main()

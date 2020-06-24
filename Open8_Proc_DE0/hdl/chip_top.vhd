@@ -76,7 +76,7 @@ begin
     PLL_Locked               => CPU_PLL_Locked,
     Open8_Bus                => Open8_Bus,
     Rd_Data                  => Read_Buses,
-    Interrupts               => Interrupts
+    Interrupts               => Open8_Ints
   );
   
   reset      <= Open8_Bus.Reset;

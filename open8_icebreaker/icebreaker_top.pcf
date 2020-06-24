@@ -1,0 +1,35 @@
+# Clock and Reset
+set_io clk 35
+set_io uButton 10
+
+# BUTTONs
+set_io BUTTON[0] 20
+set_io BUTTON[1] 19
+set_io BUTTON[2] 18
+
+# LEDS
+set_io LEDS[0] 23
+set_io LEDS[1] 27
+set_io LEDS[2] 26
+set_io LEDS[3] 25
+set_io LEDS[4] 21
+
+# DIPSW
+set_io DIPSW[0] 43
+set_io DIPSW[1] 38
+set_io DIPSW[2] 34
+set_io DIPSW[3] 31
+
+# LED Paddleboard
+set_io LED_R0 39
+set_io LED_R1 40
+set_io LED_R2 41
+set_io LED_R3 37
+
+# Trigger Signal (RED led)
+set_io DUT_Trig 11
+
+# Async Serial Port
+set_io TX_Out 9
+set_io RX_In 6
+
