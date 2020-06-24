@@ -1,0 +1,7 @@
+icebreaker_top.json
+*.asc
+*.bin
+*.hex
+*.out
+rom_4k_core.vhdl
+
