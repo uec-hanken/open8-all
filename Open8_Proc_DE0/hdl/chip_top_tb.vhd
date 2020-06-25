@@ -24,6 +24,7 @@ architecture tb of chip_top_tb is
   signal Rd_Data                    : std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);
   signal Interrupts                 : std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0) := x"00";
   
+  signal Open8_Bus                  : OPEN8_BUS_TYPE  := INIT_OPEN8_BUS;
   signal Read_Buses                 : OPEN8_BUS_ARRAY := INIT_READ_BUS;
   signal LEDG                       : std_logic_vector(7 downto 0);
   
