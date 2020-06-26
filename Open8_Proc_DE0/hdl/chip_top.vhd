@@ -104,15 +104,15 @@ begin
     Rd_Data                  => Read_RAM
   );
 
-  U_ALU16 : entity work.o8_alu16
-  generic map(
-    Address                  => ALU_Address
-  )
-  port map(
-    Open8_Bus                => Open8_Bus,
-    Rd_Data                  => Read_ALU16,
-    Interrupt                => Int_ALU16
-  );
+--U_ALU16 : entity work.o8_alu16
+--generic map(
+--  Address                  => ALU_Address
+--)
+--port map(
+--  Open8_Bus                => Open8_Bus,
+--  Rd_Data                  => Read_ALU16,
+--  Interrupt                => Int_ALU16
+--);
   
   -- CUT HERE --
 
