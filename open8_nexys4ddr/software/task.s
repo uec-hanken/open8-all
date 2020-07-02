@@ -8,11 +8,12 @@
 INIT:         CLR  R0
               SMSK                        ; Disable all interrupts and make
               STA  R0, RTC_PIT            ;  sure the PIT is disabled for now
+INFINITE:     
               ; Turn on some leds
               CLR  R0
+              STA  R0, LED_CONTROL
               DEC  R0
               STA  R0, LED_CONTROL
-INFINITE:     
               JMP INFINITE
 
 TASK0_SETUP:  LDA  R0, TASK0_STACK_PTR + 0; Repoint to task0's initial

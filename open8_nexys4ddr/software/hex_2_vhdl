@@ -32,15 +32,17 @@ ARCHITECTURE SYN OF {name} IS
    signal datout : std_logic_vector(q'range);
 BEGIN
 
-  RomProc: process(address) is
+  RomProc: process(clock) is
 
   begin
+    if rising_edge(clock) then
       case address is
 """
 
 vhdl_template_2 = """
         when others => datout <= (others => '0');
       end case;
+    end if;
   end process RomProc;
 
   q <= datout;

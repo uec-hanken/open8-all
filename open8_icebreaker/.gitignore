@@ -3,5 +3,6 @@ icebreaker_top.json
 *.bin
 *.hex
 *.out
+*.obj
 rom_4k_core.vhdl
 
