@@ -85,11 +85,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <Config>
-        <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="nexys4ddr_top"/>
-        <Option Name="TopAutoSet" Val="TRUE"/>
-      </Config>
       <File Path="$PPRDIR/../Open8_II_DE0/hdl/async_ser_rx.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -192,12 +187,17 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../Open8_II_DE0/hdl/o8_rom_4k.vhd">
+      <File Path="$PPRDIR/../open8_icebreaker/o8_rom_4k.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <Config>
+        <Option Name="DesignMode" Val="RTL"/>
+        <Option Name="TopModule" Val="nexys4ddr_top"/>
+        <Option Name="TopAutoSet" Val="TRUE"/>
+      </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
       <Filter Type="Constrs"/>
