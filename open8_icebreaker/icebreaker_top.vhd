@@ -142,7 +142,7 @@ begin
 
   U_RAM : entity work.o8_ram_4k
   generic map(
-    Address_RAM              => RAM_Address
+    Address                  => RAM_Address
   )
   port map(
     Open8_Bus                => Open8_Bus,

@@ -1,6 +1,6 @@
 PROJ ?= icebreaker_top
 
-SOURCES ?= icebreaker_top.vhd ../VHDL/async_ser_rx.vhd ../VHDL/async_ser_tx.vhd ../VHDL/o8_alu16.vhd ../VHDL/o8_async_serial.vhd ../VHDL/o8_btn_int.vhd ../VHDL/o8_elapsed_usec.vhd ../VHDL/o8_epoch_timer_ii.vhd ../VHDL/o8_gpin.vhd ../VHDL/o8_ram_4k.vhd ../VHDL/o8_register.vhd ../VHDL/o8_rtc.vhd ../VHDL/o8_sys_timer_ii.vhd ../VHDL/Open8_cfg.vhd ../VHDL/Open8_pkg.vhd o8_rom_4k.vhd fifo_1k_core.vhd ram_4k_core.vhd button_db.vhd o8_cpu.vhd software/rom_4k_core.vhdl
+SOURCES ?= icebreaker_top.vhd ../Open8_II_DE0/hdl/async_ser_rx.vhd ../Open8_II_DE0/hdl/async_ser_tx.vhd ../Open8_II_DE0/hdl/o8_alu16.vhd ../Open8_II_DE0/hdl/o8_async_serial.vhd ../Open8_II_DE0/hdl/o8_btn_int.vhd ../Open8_II_DE0/hdl/o8_elapsed_usec.vhd ../Open8_II_DE0/hdl/o8_epoch_timer_ii.vhd ../Open8_II_DE0/hdl/o8_gpin.vhd ../Open8_II_DE0/hdl/o8_ram_4k.vhd ../Open8_II_DE0/hdl/o8_register.vhd ../Open8_II_DE0/hdl/o8_rtc.vhd ../Open8_II_DE0/hdl/o8_sys_timer_ii.vhd ../Open8_II_DE0/hdl/Open8_cfg.vhd ../Open8_II_DE0/hdl/Open8_pkg.vhd o8_cpu.vhd button_db.vhd o8_rom_4k.vhd fifo_1k_core.vhd ram_4k_core.vhd software/rom_4k_core.vhdl
 
 PIN_DEF = icebreaker_top.pcf
 DEVICE = sg48

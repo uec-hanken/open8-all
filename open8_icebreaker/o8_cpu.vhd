@@ -76,17 +76,6 @@
 --            :   the lower four bits are restored, allowing ISR code to alter
 --            :   the GP flags persistently.
 --            :
---            :  Supervisor_Mode, when set, disables the STP PSR_I instruction
---            :   preventing code from setting the I bit. When enabled, only
---            :   interrupts can set the I bit, allowing for more robust memory
---            :   protection by preventing errant code execution from
---            :   inadvertently entering an interrupt state.
---            :
---            :   This setting also sets I bit at startup so that any
---            :   initialization code may be run in an ISR context, initially
---            :   bypassing memory protection. Init code should clear the I bit
---            :   when done;
---            :
 --            :  Default_Interrupt_Mask sets the intial/reset value of the
 --            :   interrupt mask. To remain true to the original core, which
 --            :   had no interrupt mask, this should be set to x"FF". Otherwise
@@ -216,19 +205,6 @@
 -- Seth Henry      04/16/20 Modified to use new Open8 bus record. Also added
 --                           reset and usec_tick logic to drive utility
 --                           signals. Also added Halt_Ack output.
--- Seth Henry      05/20/20 Added two new generics to alter the way the I bit
---                           is handled. The Supervisor_Mode setting disables
---                           STP PSR_I from being executed, preventing it
---                           from being set outside of an ISR. The
---                           Default_Int_Flag setting allows the I bit to
---                           start set so that initialization code can run,
---                           but not be hijacked later to corrupt any memory
---                           write protection later.
--- Seth Henry      05/21/20 Supervisor_Mode now protects the interrupt mask
---                           and stack pointer as well.
--- Seth Henry      05/24/20 Removed the Default_Int_Flag, as it is covered by
---                           Supervisor_Mode. If Supervisor_Mode isn't set,
---                           code can simply use STP to set the bit
 
 library ieee;
   use ieee.std_logic_1164.all;
@@ -251,7 +227,6 @@ entity o8_cpu is
     Enable_NMI               : boolean      := true;    -- Force INTR0 enabled
     Sequential_Interrupts    : boolean      := false;   -- Interruptable ISRs
     RTI_Ignores_GP_Flags     : boolean      := false;   -- RTI sets all flags
-    Supervisor_Mode          : boolean      := false;   -- I bit is restricted
     Default_Interrupt_Mask   : DATA_TYPE    := x"FF";   -- Enable all Ints
     Clock_Frequency          : real                     -- Clock Frequency
 );
@@ -321,7 +296,6 @@ architecture behave of o8_cpu is
   signal INT_Ctrl            : INT_CTRL_TYPE;
   signal Ack_D, Ack_Q, Ack_Q1: std_logic   := '0';
   signal Int_Req, Int_Ack    : std_logic   := '0';
-  signal Set_Mask            : std_logic   := '0';
   signal Int_Mask            : DATA_TYPE   := x"00";
   signal ISR_Addr            : ADDRESS_TYPE := x"0000";
   signal i_Ints              : INTERRUPT_BUNDLE := x"00";
@@ -356,7 +330,7 @@ begin
       if( or_reduce(uSec_Cntr) = '0' )then
         uSec_Cntr            <= USEC_DLY;
       end if;
-      uSec_Tick              <=  nor uSec_Cntr;
+      uSec_Tick              <= nor uSec_Cntr;
     end if;
   end process;
 
@@ -622,18 +596,6 @@ begin
             PC_Ctrl.Offset   <= PC_REV2;
             DP_Ctrl.Src      <= DATA_WR_REG;
             DP_Ctrl.Reg      <= ACCUM;
-
-          when OP_STP =>
-            PC_Ctrl.Offset   <= PC_NEXT;
-            if( Supervisor_Mode )then
-              if( SubOp /= PSR_I )then
-                ALU_Ctrl.Oper  <= Opcode;
-                ALU_Ctrl.Reg   <= SubOp;
-              end if;
-            else
-              ALU_Ctrl.Oper  <= Opcode;
-              ALU_Ctrl.Reg   <= SubOp;
-            end if;
 
           when others =>
             PC_Ctrl.Offset   <= PC_NEXT;
@@ -994,7 +956,6 @@ begin
       Pending                <= x"00";
       Wait_for_FSM           <= '0';
       Wait_for_ISR           <= '0';
-      Set_Mask               <= '0';
       if( Enable_NMI )then
         Int_Mask             <= Default_Interrupt_Mask(7 downto 1) & '1';
       else
@@ -1006,9 +967,6 @@ begin
         Regfile(i)           <= x"00";
       end loop;
       Flags                  <= x"00";
-      if( Supervisor_Mode )then
-        Flags(PSR_I)         <= '1';
-      end if;
 
       Open8_Bus.GP_Flags     <= (others => '0');
 
@@ -1108,13 +1066,7 @@ begin
           Stack_Ptr          <= Stack_Start_Addr;
 
         when SP_SET =>
-          if( Supervisor_Mode )then
-            if( Flags(PSR_I) = '1' )then
-              Stack_Ptr      <= Regfile(1) & Regfile(0);
-            end if;
-          else
-            Stack_Ptr        <= Regfile(1) & Regfile(0);
-          end if;
+          Stack_Ptr          <= Regfile(1) & Regfile(0);
 
         when SP_POP  =>
           Stack_Ptr          <= Stack_Ptr + 1;
@@ -1130,17 +1082,8 @@ begin
 -------------------------------------------------------------------------------
 -- Interrupt Controller
 -------------------------------------------------------------------------------
-
-      -- If Supervisor_Mode is set, restrict the SMSK instruction such that it
-      --  requires the I bit to be set.
-      if( Supervisor_Mode )then
-        Set_Mask             <= INT_Ctrl.Mask_Set and Flags(PSR_I);
-      else
-        Set_Mask             <= INT_Ctrl.Mask_Set;
-      end if;
-
       -- The interrupt control mask is always sourced out of R0
-      if( Set_Mask = '1' )then
+      if( INT_Ctrl.Mask_Set = '1' )then
         if( Enable_NMI )then
           Int_Mask           <= Regfile(conv_integer(ACCUM))(7 downto 1) & '1';
         else
@@ -1217,7 +1160,7 @@ begin
         when ALU_INC => -- Rn = Rn + 1 : Flags N,C,Z
           Sum                := ("0" & x"01") +
                                 ("0" & Regfile(Index));
-          Flags(PSR_Z)       <=  nor Sum(7 downto 0);
+          Flags(PSR_Z)       <= nor Sum(7 downto 0);
           Flags(PSR_C)       <= Sum(8);
           Flags(PSR_N)       <= Sum(7);
           Regfile(Index)     <= Sum(7 downto 0);
@@ -1239,38 +1182,38 @@ begin
           Sum                := ("0" & Regfile(0)) +
                                 ("0" & Regfile(Index)) +
                                 Flags(PSR_C);
-          Flags(PSR_Z)       <=  nor Sum(7 downto 0);
+          Flags(PSR_Z)       <= nor Sum(7 downto 0);
           Flags(PSR_C)       <= Sum(8);
           Flags(PSR_N)       <= Sum(7);
           Regfile(0)         <= Sum(7 downto 0);
 
         when ALU_TX0 => -- R0 = Rn : Flags N,Z
           Temp               := "0" & Regfile(Index);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_N)       <= Temp(7);
           Regfile(0)         <= Temp(7 downto 0);
 
         when ALU_OR  => -- R0 = R0 | Rn : Flags N,Z
           Temp(7 downto 0)   := Regfile(0) or Regfile(Index);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_N)       <= Temp(7);
           Regfile(0)         <= Temp(7 downto 0);
 
         when ALU_AND => -- R0 = R0 & Rn : Flags N,Z
           Temp(7 downto 0)   := Regfile(0) and Regfile(Index);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_N)       <= Temp(7);
           Regfile(0)         <= Temp(7 downto 0);
 
         when ALU_XOR => -- R0 = R0 ^ Rn : Flags N,Z
           Temp(7 downto 0)   := Regfile(0) xor Regfile(Index);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_N)       <= Temp(7);
           Regfile(0)         <= Temp(7 downto 0);
 
         when ALU_ROL => -- Rn = Rn<<1,C : Flags N,C,Z
           Temp               := Regfile(Index) & Flags(PSR_C);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_C)       <= Temp(8);
           Flags(PSR_N)       <= Temp(7);
           Regfile(Index)     <= Temp(7 downto 0);
@@ -1278,7 +1221,7 @@ begin
         when ALU_ROR => -- Rn = C,Rn>>1 : Flags N,C,Z
           Temp               := Regfile(Index)(0) & Flags(PSR_C) &
                                 Regfile(Index)(7 downto 1);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_C)       <= Temp(8);
           Flags(PSR_N)       <= Temp(7);
           Regfile(Index)     <= Temp(7 downto 0);
@@ -1286,7 +1229,7 @@ begin
         when ALU_DEC => -- Rn = Rn - 1 : Flags N,C,Z
           Sum                := ("0" & Regfile(Index)) +
                                 ("0" & x"FF");
-          Flags(PSR_Z)       <=  nor Sum(7 downto 0);
+          Flags(PSR_Z)       <= nor Sum(7 downto 0);
           Flags(PSR_C)       <= Sum(8);
           Flags(PSR_N)       <= Sum(7);
           Regfile(Index)     <= Sum(7 downto 0);
@@ -1295,7 +1238,7 @@ begin
           Sum                := ("0" & Regfile(0)) +
                                 ("1" & (not Regfile(Index))) +
                                 Flags(PSR_C);
-          Flags(PSR_Z)       <=  nor Sum(7 downto 0);
+          Flags(PSR_Z)       <= nor Sum(7 downto 0);
           Flags(PSR_C)       <= Sum(8);
           Flags(PSR_N)       <= Sum(7);
           Regfile(0)         <= Sum(7 downto 0);
@@ -1305,7 +1248,7 @@ begin
                                 ("0" & Regfile(Index));
           Flags(PSR_C)       <= Sum(8);
           Regfile(0)         <= Sum(7 downto 0);
-          Flags(PSR_Z)       <=  nor Sum(7 downto 0);
+          Flags(PSR_Z)       <= nor Sum(7 downto 0);
           Flags(PSR_N)       <= Sum(7);
 
         when ALU_STP => -- Sets bit(n) in the Flags register
@@ -1320,7 +1263,7 @@ begin
 
         when ALU_T0X => -- Rn = R0 : Flags N,Z
           Temp               := "0" & Regfile(0);
-          Flags(PSR_Z)       <=  nor Temp(7 downto 0);
+          Flags(PSR_Z)       <= nor Temp(7 downto 0);
           Flags(PSR_N)       <= Temp(7);
           Regfile(Index)     <= Temp(7 downto 0);
 
@@ -1328,17 +1271,17 @@ begin
           Sum                := ("0" & Regfile(0)) +
                                 ("1" & (not Regfile(Index))) +
                                 '1';
-          Flags(PSR_Z)       <=  nor Sum(7 downto 0);
+          Flags(PSR_Z)       <= nor Sum(7 downto 0);
           Flags(PSR_C)       <= Sum(8);
           Flags(PSR_N)       <= Sum(7);
 
         when ALU_MUL => -- Stage 1 of 2 {R1:R0} = R0 * Rn : Flags Z
           Regfile(0)         <= Mult(7 downto 0);
           Regfile(1)         <= Mult(15 downto 8);
-          Flags(PSR_Z)       <=  nor Mult;
+          Flags(PSR_Z)       <= nor Mult;
 
         when ALU_LDI => -- Rn <= Data : Flags N,Z
-          Flags(PSR_Z)       <=  nor Operand1;
+          Flags(PSR_Z)       <= nor Operand1;
           Flags(PSR_N)       <= Operand1(7);
           Regfile(Index)     <= Operand1;
 
@@ -1356,7 +1299,7 @@ begin
           Regfile(1)         <= Stack_Ptr(15 downto 8);
 
         when ALU_GMSK =>
-          Flags(PSR_Z)       <=  nor Int_Mask;
+          Flags(PSR_Z)       <= nor Int_Mask;
           Regfile(0)         <= Int_Mask;
 
         when others =>
