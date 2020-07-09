@@ -114,4 +114,11 @@ begin
 
   -- reset = 1 for first clock cycle and then 0
   Locked <= '0', '1' after T*5;
+  
+  -- Procedure for finishing the sim
+  process
+  begin
+    wait for T*100;
+    assert FALSE Report "Simulation Finished" severity FAILURE;
+  end process;
 end tb ;
