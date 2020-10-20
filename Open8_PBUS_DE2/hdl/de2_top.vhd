@@ -186,10 +186,10 @@ begin
     locked                   => CPU_PLL_Locked
   );
   
-  end generate
+  end generate CLK_GEN_0;
 
   CLK_GEN_1: if(IMPL = 1) generate
-    CPU_Clock := GPIO1(30);
+    CPU_Clock <= GPIO1(30);
 	
 	CPU_PLL_Reset_proc: process( CPU_Clock, CPU_PLL_Asyn_Reset )
     begin
@@ -201,9 +201,9 @@ begin
         CPU_PLL_Reset          <= CPU_PLL_Reset_q;
       end if;
     end process;
-    CPU_PLL_Locked: := not CPU_PLL_Reset;
+    CPU_PLL_Locked <= not CPU_PLL_Reset;
   
-  end generate
+  end generate CLK_GEN_1;
   
   
 

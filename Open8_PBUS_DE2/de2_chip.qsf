@@ -15,7 +15,7 @@ set_global_assignment -name EDA_SIMULATION_TOOL "<None>"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT NONE -section_id eda_simulation
 
-set_location_assignment PIN_Y2   -to CLOCK_50
+set_location_assignment PIN_Y2 -to CLOCK_50
 
 set_location_assignment PIN_M23 -to KEY0
 set_location_assignment PIN_M21 -to KEY1
@@ -195,80 +195,43 @@ set_location_assignment PIN_AH26 -to GPIO0[33]
 set_location_assignment PIN_AH23 -to GPIO0[34]
 set_location_assignment PIN_AG26 -to GPIO0[35]
 
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[0]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[1]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[2]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[3]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[4]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[5]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[6]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[7]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[8]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[9]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[10]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[11]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[12]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[13]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[14]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[15]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[16]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[17]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[18]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[19]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[20]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[21]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[22]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[23]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[24]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[25]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[26]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[27]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[28]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[29]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[30]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[31]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[32]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[33]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[34]
-set_instance_assignment -name IO_STANDARD "1.8 V" -to GPIO1[35]
-
 # Important NOTE:
 # Those GPIO1 are extracted from the HSMC connector
 # We just use a regular HSMC to 3xGPIO converter
 # All are binded to the J2 port from the HSMC
 
 #set_location_assignment PIN_Y28 -to GPIO1[0]    # HSMC_CLKIN_N2
-set_location_assignment PIN_T22 -to GPIO1[1]    # HSMC_RX_n16
+set_location_assignment PIN_T22 -to GPIO1[1]
 #set_location_assignment PIN_Y27 -to GPIO1[2]    # HSMC_CLKIN_P2
-set_location_assignment PIN_T21 -to GPIO1[3]    # HSMC_RX_p16
-set_location_assignment PIN_V22 -to GPIO1[4]    # HSMC_TX_n16
-set_location_assignment PIN_R23 -to GPIO1[5]    # HSMC_RX_n15
-set_location_assignment PIN_U22 -to GPIO1[6]    # HSMC_TX_p16
-set_location_assignment PIN_R22 -to GPIO1[7]    # HSMC_RX_p15
-set_location_assignment PIN_V28 -to GPIO1[8]    # HSMC_TX_n15
-set_location_assignment PIN_R21 -to GPIO1[9]    # HSMC_RX_n14
-set_location_assignment PIN_V27 -to GPIO1[10]   # HSMC_TX_p15
-set_location_assignment PIN_P21 -to GPIO1[11]   # HSMC_RX_p14
-set_location_assignment PIN_U28 -to GPIO1[12]   # HSMC_TX_n14
-set_location_assignment PIN_P26 -to GPIO1[13]   # HSMC_RX_n13
-set_location_assignment PIN_U27 -to GPIO1[14]   # HSMC_TX_p14
-set_location_assignment PIN_P25 -to GPIO1[15]   # HSMC_RX_p13
-set_location_assignment PIN_V24 -to GPIO1[16]   # HSMC_CLKOUT_n2
-set_location_assignment PIN_N26 -to GPIO1[17]   # HSMC_RX_n12
-set_location_assignment PIN_V23 -to GPIO1[18]   # HSMC_CLKOUT_p2
-set_location_assignment PIN_N25 -to GPIO1[19]   # HSMC_RX_p12
-set_location_assignment PIN_R28 -to GPIO1[20]   # HSMC_TX_n13
-set_location_assignment PIN_L22 -to GPIO1[21]   # HSMC_RX_n11
-set_location_assignment PIN_R27 -to GPIO1[22]   # HSMC_TX_p13
-set_location_assignment PIN_L21 -to GPIO1[23]   # HSMC_RX_p11
-set_location_assignment PIN_V26 -to GPIO1[24]   # HSMC_TX_n12
-set_location_assignment PIN_U26 -to GPIO1[25]   # HSMC_RX_n10
-set_location_assignment PIN_V25 -to GPIO1[26]   # HSMC_TX_p12
-set_location_assignment PIN_U25 -to GPIO1[27]   # HSMC_RX_p10
-set_location_assignment PIN_L28 -to GPIO1[28]   # HSMC_TX_n11
-set_location_assignment PIN_T26 -to GPIO1[29]   # HSMC_RX_n9
-set_location_assignment PIN_L27 -to GPIO1[30]   # HSMC_TX_p11
-set_location_assignment PIN_T25 -to GPIO1[31]   # HSMC_RX_p9
+set_location_assignment PIN_T21 -to GPIO1[3]
+set_location_assignment PIN_V22 -to GPIO1[4]
+set_location_assignment PIN_R23 -to GPIO1[5]
+set_location_assignment PIN_U22 -to GPIO1[6]
+set_location_assignment PIN_R22 -to GPIO1[7]
+set_location_assignment PIN_V28 -to GPIO1[8]
+set_location_assignment PIN_R21 -to GPIO1[9]
+set_location_assignment PIN_V27 -to GPIO1[10]
+set_location_assignment PIN_P21 -to GPIO1[11]
+set_location_assignment PIN_U28 -to GPIO1[12]
+set_location_assignment PIN_P26 -to GPIO1[13]
+set_location_assignment PIN_U27 -to GPIO1[14]
+set_location_assignment PIN_P25 -to GPIO1[15]
+set_location_assignment PIN_V24 -to GPIO1[16]
+set_location_assignment PIN_N26 -to GPIO1[17]
+set_location_assignment PIN_V23 -to GPIO1[18]
+set_location_assignment PIN_N25 -to GPIO1[19]
+set_location_assignment PIN_R28 -to GPIO1[20]
+set_location_assignment PIN_L22 -to GPIO1[21]
+set_location_assignment PIN_R27 -to GPIO1[22]
+set_location_assignment PIN_L21 -to GPIO1[23]
+set_location_assignment PIN_V26 -to GPIO1[24]
+set_location_assignment PIN_U26 -to GPIO1[25]
+set_location_assignment PIN_V25 -to GPIO1[26]
+set_location_assignment PIN_U25 -to GPIO1[27]
+set_location_assignment PIN_L28 -to GPIO1[28]
+set_location_assignment PIN_T26 -to GPIO1[29]
+set_location_assignment PIN_L27 -to GPIO1[30]
+set_location_assignment PIN_T25 -to GPIO1[31]
 #set_location_assignment PIN_J26 -to GPIO1[32]   # HSMC_TX_n10
 #set_location_assignment PIN_P28 -to GPIO1[33]   # HSMC_TX_n9
 #set_location_assignment PIN_J25 -to GPIO1[34]   # HSMC_TX_p10
@@ -329,4 +292,5 @@ set_global_assignment -name VHDL_FILE HDL/o8_sys_timer_ii.vhd
 set_global_assignment -name VHDL_FILE HDL/o8_vector_rx.vhd
 set_global_assignment -name VHDL_FILE hdl/soc_top.vhd
 set_global_assignment -name VHDL_FILE hdl/de2_top.vhd
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
