@@ -14,6 +14,9 @@ library work;
   use work.open8_cfg.all;
 
 entity de2_top is
+generic(
+  IMPL : Integer := 1
+);
 port(
   -- Master oscillator
   CLOCK_50                   : in  std_logic;
@@ -160,7 +163,10 @@ architecture behave of de2_top is
   END COMPONENT; 
 
 begin
-
+  
+  
+  CLK_GEN_0: if(IMPL = 0) generate
+    
   CPU_PLL_Reset_proc: process( CPU_PLL_Clock, CPU_PLL_Asyn_Reset )
   begin
     if( CPU_PLL_Asyn_Reset = '0' )then
@@ -179,6 +185,25 @@ begin
     c0                       => CPU_Clock,
     locked                   => CPU_PLL_Locked
   );
+  
+  end generate
+
+  CLK_GEN_1: if(IMPL = 1) generate
+    CPU_Clock := GPIO1(30);
+	
+	CPU_PLL_Reset_proc: process( CPU_Clock, CPU_PLL_Asyn_Reset )
+    begin
+      if( CPU_PLL_Asyn_Reset = '0' )then
+        CPU_PLL_Reset_q        <= '1';
+        CPU_PLL_Reset          <= '1';
+      elsif( rising_edge(CPU_PLL_Clock) )then
+        CPU_PLL_Reset_q        <= '0';
+        CPU_PLL_Reset          <= CPU_PLL_Reset_q;
+      end if;
+    end process;
+    CPU_PLL_Locked: := not CPU_PLL_Reset;
+  
+  end generate
   
   
 
