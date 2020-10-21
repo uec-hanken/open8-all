@@ -95,7 +95,7 @@ begin
   
   -- CUT HERE --
 
-  U_RAM : entity work.o8_ram_4k
+  U_RAM : entity work.o8_ram_1k
   generic map(
     Address                  => RAM_Address
   )
