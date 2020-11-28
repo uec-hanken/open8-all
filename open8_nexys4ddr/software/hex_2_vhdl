@@ -90,9 +90,17 @@ def main():
 
     if len(sys.argv) < 2:
         sys.exit('Please give a .hex file as input')
+    
+    siz = 4096
+    if len(sys.argv) >= 3:
+        siz = int(sys.argv[2])
+    
+    nam = "rom_4k_core"
+    if len(sys.argv) >= 4:
+        nam = sys.argv[3]
 
     print('-- This file created by ' + __file__)
-    vhdl = gen_rom("rom_4k_core", 8, 4096, sys.argv[1])
+    vhdl = gen_rom(nam, 8, siz, sys.argv[1])
     print(vhdl)
 
 if __name__ == '__main__':
