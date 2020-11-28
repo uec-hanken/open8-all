@@ -249,19 +249,19 @@ begin
     RTS_Out                  => open
   );
 
-  U_MAX : entity work.o8_max7221
-  generic map(
-    Bitclock_Frequency       => MAX7221_BITRATE,
-    Clock_Frequency          => Clock_Frequency,
-    Address                  => MAX_Address
-  )
-  port map(
-    Open8_Bus                => Open8_Bus,
-    --
-    Mx_Data                  => Mx_Data,
-    Mx_Clock                 => Mx_Clock,
-    MX_LDCSn                 => MX_LDCSn
-  );
+--U_MAX : entity work.o8_max7221
+--generic map(
+--  Bitclock_Frequency       => MAX7221_BITRATE,
+--  Clock_Frequency          => Clock_Frequency,
+--  Address                  => MAX_Address
+--)
+--port map(
+--  Open8_Bus                => Open8_Bus,
+--  --
+--  Mx_Data                  => Mx_Data,
+--  Mx_Clock                 => Mx_Clock,
+--  MX_LDCSn                 => MX_LDCSn
+--);
 
   U_VEC_RX : entity work.o8_vector_rx
   generic map(
