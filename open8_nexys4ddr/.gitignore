@@ -9,4 +9,5 @@ open8_nexys4ddr.sim
 *.out
 *.obj
 rom_4k_core.vhdl
+software/*.vhd
 
