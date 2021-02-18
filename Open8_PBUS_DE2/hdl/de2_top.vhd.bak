@@ -8,9 +8,6 @@
 
 library ieee;
   use ieee.std_logic_1164.all;
-  use ieee.std_logic_arith.all;
-  use ieee.std_logic_unsigned.all;
-  use ieee.std_logic_misc.all;
 
 library work;
   use work.open8_pkg.all;
@@ -18,7 +15,7 @@ library work;
 
 entity de2_top is
 generic(
-  IMPL : Integer := 0
+  IMPL : Integer := 1
 );
 port(
   -- Master oscillator
@@ -102,8 +99,6 @@ architecture behave of de2_top is
   signal CPU_PLL_Reset_q     : std_logic := '0';
   signal CPU_PLL_Reset       : std_logic := '0';
 
-  signal CPU_Fast_Clock      : std_logic := '0';
-  signal CPU_Clock_Cnt       : std_logic_vector(7 downto 0) := x"00";
   signal CPU_Clock           : std_logic := '0';
   signal CPU_PLL_Locked      : std_logic := '0';
   signal Buttons             : std_logic_vector(7 downto 0) := x"00";
@@ -170,7 +165,7 @@ architecture behave of de2_top is
 begin
   
   
-  CLK_GEN_0: if(IMPL = 0) generate
+  CLK_GEN_0 : if(IMPL = 0) generate
     
   CPU_PLL_Reset_proc: process( CPU_PLL_Clock, CPU_PLL_Asyn_Reset )
   begin
@@ -187,22 +182,14 @@ begin
   port map(
     areset                   => CPU_PLL_Reset,
     inclk0                   => CPU_PLL_Clock,
-    c0                       => CPU_Fast_Clock,
+    c0                       => CPU_Clock,
     locked                   => CPU_PLL_Locked
   );
-    
-  CPU_Fast_clk_proc: process( CPU_Fast_Clock )
-  begin
-    if( rising_edge(CPU_Fast_Clock) )then
-      CPU_Clock_Cnt          <= CPU_Clock_Cnt + 1;
-    end if;
-  end process;
-  CPU_Clock <= CPU_Clock_Cnt(5);
   
-  end generate CLK_GEN_0;
+  end generate
 
-  CLK_GEN_1: if(IMPL = 1) generate
-    CPU_Clock <= GPIO1(30);
+  CLK_GEN_1 : if(IMPL = 1) generate
+    CPU_Clock := GPIO1(30);
 	
 	CPU_PLL_Reset_proc: process( CPU_Clock, CPU_PLL_Asyn_Reset )
     begin
@@ -214,9 +201,9 @@ begin
         CPU_PLL_Reset          <= CPU_PLL_Reset_q;
       end if;
     end process;
-    CPU_PLL_Locked <= not CPU_PLL_Reset;
+    CPU_PLL_Locked: := not CPU_PLL_Reset;
   
-  end generate CLK_GEN_1;
+  end generate
   
   
 
