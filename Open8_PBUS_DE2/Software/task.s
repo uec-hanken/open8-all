@@ -8,13 +8,45 @@
 INIT:         CLR  R0
               SMSK                        ; Disable all interrupts and make
               STA  R0, RTC_PIT            ;  sure the PIT is disabled for now
+			  
 INFINITE:     
               ; Turn on some leds
+			  CLP PSR_Z
+			  LDI R0,  #17
+			  STA  R1, LED_CONTROL
+			  INC R1
+			  CMP R1
+			  BRZ  LED_1
+			  ;STA  R1, LED_CONTROL
+			  
               CLR  R0
-              STA  R0, LED_CONTROL
+              LDI  R0, #255
+			  JMP  COUNTER_1
+			  
+COUNTER_1:     
+			  CLP PSR_Z
               DEC  R0
-              STA  R0, LED_CONTROL
-              JMP INFINITE
+			  BTT  2
+			  BRZ  COUNTER_2
+			  JMP  COUNTER_1
+
+COUNTER_2:    ;DEC R1
+			  ;STA  R1, LED_CONTROL
+			  CLP PSR_Z
+              CLR  R0
+              LDI  R0, #255
+			  JMP  COUNTER_3
+			  
+COUNTER_3:
+			  CLP PSR_Z
+              DEC  R0
+			  BTT  2
+			  BRZ  INFINITE
+			  JMP  COUNTER_3
+
+LED_1:		LDI R1, #0
+			JMP INFINITE
+
 
 TASK0_SETUP:  LDA  R0, TASK0_STACK_PTR + 0; Repoint to task0's initial
               LDA  R1, TASK0_STACK_PTR + 1; stack location

@@ -29,10 +29,16 @@ port(
   KEY2                       : in  std_logic;
   KEY3                       : in  std_logic;
   -- LED outputs
-  LEDG                       : out std_logic_vector(7 downto 0);
+  --LEDG                       : out std_logic_vector(7 downto 0);
   LEDR                       : out std_logic_vector(17 downto 0);
+  
+  HEX0                       : out std_logic_vector(6 downto 0);
+  HEX1                       : out std_logic_vector(6 downto 0);
+  HEX2                       : out std_logic_vector(6 downto 0);
+	 
   -- Switches
   SW                         : in  std_logic_vector(9 downto 0);
+  SW_10                      : in  std_logic;
   -- DRAM
   DRAM_ADDR                  : out std_logic_vector(12 downto 0);
   DRAM_BA                    : out std_logic_vector(1 downto 0);
@@ -73,6 +79,8 @@ architecture behave of de2_top is
   alias  LED_R1              is LEDR(1);
   alias  LED_R2              is LEDR(2);
   alias  LED_R3              is LEDR(3);
+  
+  signal  LED_binary         : std_logic_vector(7 downto 0);
 
   -- SDLC Serial Interface   
   alias  SDLC_In             is UNCONNECTED(0);  
@@ -95,7 +103,7 @@ architecture behave of de2_top is
   -- MAX 7221 SPI Interface    
   alias  Mx_Data             is UNCONNECTED(9); 
   alias  Mx_Clock            is UNCONNECTED(10); 
-  alias  MX_LDCSn            is UNCONNECTED(12); 
+  alias  MX_LDCSn            is UNCONNECTED(12);
 
   -- Internal signals
 
@@ -107,6 +115,11 @@ architecture behave of de2_top is
   signal CPU_Clock           : std_logic := '0';
   signal CPU_PLL_Locked      : std_logic := '0';
   signal Buttons             : std_logic_vector(7 downto 0) := x"00";
+  
+  signal counter       		  : std_logic_vector(31 downto 0) := x"00000000";
+  signal LED_out             : std_logic := '0';
+  signal State       		  : std_logic_vector(4 downto 0) := "00000";
+  signal Toggle_led      	  : std_logic := '0';
 
   signal clock                      : std_logic;
   signal reset                      : std_logic;
@@ -118,6 +131,9 @@ architecture behave of de2_top is
   signal GP_Flags                   : std_logic_vector(4 downto 0);
   signal Rd_Data                    : std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);
   signal Interrupts                 : std_logic_vector(OPEN8_DATA_WIDTH - 1 downto 0);
+  
+  
+  signal buf_Clock           : std_logic := '0';
   
   COMPONENT ALT_INBUF
     GENERIC
@@ -168,6 +184,166 @@ architecture behave of de2_top is
   END COMPONENT; 
 
 begin
+  
+  LED_DIV: process(Toggle_led)
+  begin
+		if (rising_edge(Toggle_led)) then 
+
+			if(counter = 50000) then
+					counter <= x"00000000";
+					LED_out <= not LED_out;
+			else counter <= counter + x"00000001";
+			end if;
+		end if;
+  end process;
+  
+  
+  
+  FSM: process(CPU_Clock, SW_10)
+  begin
+		if (rising_edge(CPU_Clock)) then
+			if ( SW_10 = '0' )then
+				State <= "00000";
+				Toggle_led <= '0';
+				else 
+					case State is 
+					
+					when "00000" => 
+						if(LED_binary = 0) then 
+							State <= "00001";
+						else State <= "11111";
+						end if;
+					when "00001" => 
+						if(LED_binary = 0) then 
+							State <= "00001";
+						elsif(LED_binary = 1) then 
+							State <= "00010";
+						else State <= "11111";
+						end if;
+					when "00010" => 
+						if(LED_binary = 1) then 
+							State <= "00010";
+						elsif(LED_binary = 2) then 
+							State <= "00011";
+						else State <= "11111";
+						end if;
+					when "00011" => 
+						if(LED_binary = 2) then 
+							State <= "00011";
+						elsif(LED_binary = 3) then 
+							State <= "00100";
+						else State <= "11111";
+						end if;
+					when "00100" => 
+						if(LED_binary = 3) then 
+							State <= "00100";
+						elsif(LED_binary = 4) then 
+							State <= "00101";
+						else State <= "11111";
+						end if;
+					when "00101" => 
+						if(LED_binary = 4) then 
+							State <= "00101";
+						elsif(LED_binary = 5) then 
+							State <= "00110";
+						else State <= "11111";
+						end if;
+					when "00110" => 
+						if(LED_binary = 5) then 
+							State <= "00110";
+						elsif(LED_binary = 6) then 
+							State <= "00111";
+						else State <= "11111";
+						end if;		
+					when "00111" => 
+						if(LED_binary = 6) then 
+							State <= "00111";
+						elsif(LED_binary = 7) then 
+							State <= "01000";
+						else State <= "11111";
+						end if;	
+					when "01000" => 
+						if(LED_binary = 7) then 
+							State <= "01000";
+						elsif(LED_binary = 8) then 
+							State <= "01001";
+						else State <= "11111";
+						end if;
+					when "01001" => 
+						if(LED_binary = 8) then 
+							State <= "01001";
+						elsif(LED_binary = 9) then 
+							State <= "01010";
+						else State <= "11111";
+						end if;
+					when "01010" => 
+						if(LED_binary = 9) then 
+							State <= "01010";
+						elsif(LED_binary = 10) then 
+							State <= "01011";
+						else State <= "11111";
+						end if;	
+					when "01011" => 
+						if(LED_binary = 10) then 
+							State <= "01011";
+						elsif(LED_binary = 11) then 
+							State <= "01100";
+						else State <= "11111";
+						end if;
+					when "01100" => 
+						if(LED_binary = 11) then 
+							State <= "01100";
+						elsif(LED_binary = 12) then 
+							State <= "01101";
+						else State <= "11111";
+						end if;
+					when "01101" => 
+						if(LED_binary = 12) then 
+							State <= "01101";
+						elsif(LED_binary = 13) then 
+							State <= "01110";
+						else State <= "11111";
+						end if;
+					when "01110" => 
+						if(LED_binary = 13) then 
+							State <= "01110";
+						elsif(LED_binary = 14) then 
+							State <= "01111";
+						else State <= "11111";
+						end if;
+					when "01111" => 
+						if(LED_binary = 14) then 
+							State <= "01111";
+						elsif(LED_binary = 15) then 
+							State <= "10000";
+						else State <= "11111";
+						end if;
+					when "10000" => 
+						if(LED_binary = 15) then 
+							State <= "10000";
+						elsif(LED_binary = 16) then 
+							State <= "10001";
+						else State <= "11111";
+						end if;	
+					when "10001" => 
+						Toggle_led <= not Toggle_led;
+						if(LED_binary = 16) then 
+							State <= "10001";
+						elsif(LED_binary = 0) then 
+							State <= "00000";
+						else State <= "11111";
+						end if;
+					
+					when "11111" => 
+						Toggle_led <= '0';
+					when others => 
+						Toggle_led <= '0';
+					end case;
+			end if;
+		end if;	
+  end process;
+  
+  
   
   
   CLK_GEN_0: if(IMPL = 0) generate
@@ -241,7 +417,7 @@ begin
     LED_R1              => LED_R1,
     LED_R2              => LED_R2,
     LED_R3              => LED_R3, 
-    LEDG                => LEDG, 
+    LEDG                => LED_binary, 
     SW                  => SW, 
     Buttons             => Buttons, 
     SDLC_In             => SDLC_In, 
@@ -256,7 +432,16 @@ begin
     Mx_Clock            => Mx_Clock,
     MX_LDCSn            => MX_LDCSn
   );
-  
+  Segment : entity work.binary_7segment
+  port map(
+	 clk                         => CPU_Clock,
+    reset                       => reset,
+    binary_in                   => "000000000000000" & LED_out,
+    HEX0                        => HEX0,
+    HEX1                        => HEX1,
+    HEX2                        => HEX2
+	 
+  );
   GPIO1(27) <= CPU_Clock; -- clock
   --BUF_CPU_Clock : COMPONENT ALT_IOBUF port map (i => CPU_Clock, oe => '1', io => GPIO1(27));
   --Address                    => GPIO0(18) & GPIO0(16 downto 3) & GPIO0(1),
@@ -286,13 +471,15 @@ begin
   end generate GEN_Rd_Data;
   --Wr_En                      => GPIO0(35),
   BUF_Wr_En : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO0(35), o => Wr_En);
-    
+  
   --GPIO1(1) <= Interrupts(0);
   --GPIO1(9 downto 3) <= Interrupts(7 downto 1);
-  BUF_Interrupts_0 : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO1(1), o => Interrupts(0));
+  BUF_Interrupts_0 : COMPONENT ALT_IOBUF port map (i => Interrupts(0), oe => '1', io => GPIO1(1));
   GEN_Interrupts: for I in 1 to 7 generate
-    BUF_Interrupts : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO1(I+2), o => Interrupts(I)); -- For starts in 1
+    BUF_Interrupts : COMPONENT ALT_IOBUF port map (i => Interrupts(I), oe => '1', io => GPIO1(I+2)); -- For starts in 1
   end generate GEN_Interrupts;
+  
+  
   --GP_Flags                   => GPIO1(14 downto 10),
   GEN_GP_Flags: for I in 0 to 4 generate
     BUF_GP_Flags : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO1(I+10), o => GP_Flags(I));
@@ -302,9 +489,10 @@ begin
   --Rd_En                      => GPIO1(22),
   BUF_Rd_En : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO1(22), o => Rd_En);
   --GPIO1(24) <= CPU_PLL_Locked; -- Locked
-  BUF_CPU_PLL_Locked : COMPONENT ALT_IOBUF port map (i => CPU_PLL_Locked, oe => '1', io => GPIO1(24));
+  BUF_CPU_PLL_Locked : COMPONENT ALT_IOBUF port map (i => SW_10, oe => '1', io => GPIO1(24));
   --reset                      => GPIO1(25),
   BUF_reset : COMPONENT ALT_IOBUF port map (i => '0', oe => '0', io => GPIO1(25), o => reset);
+
   
   -- Non buffered, because reasons
   Buttons(0) <= KEY1;
