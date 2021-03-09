@@ -10,4 +10,7 @@ open8_nexys4ddr.sim
 *.obj
 rom_4k_core.vhdl
 software/*.vhd
-
+*.log
+*.jou
+*.str
+open8_nexys4ddr.srcs/sources_1/ip
